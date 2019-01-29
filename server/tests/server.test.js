@@ -3,9 +3,20 @@ const expect = require('expect');
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 
+const todos = [
+    {
+        text:'First Test Todo'
+    },
+    {
+        test:'Second Test Todo'
+    }
+];
+
 beforeEach((done)=>{
-    Todo.remove({}).then(()=>done());
-})
+    Todo.remove({}).then(()=>{
+        return Todo.insertMany(todos);
+    }).then(()=>done());
+});
 
 describe('POST /todos',()=>{
     it('Should create a new Todo',(done)=>{
@@ -26,7 +37,7 @@ describe('POST /todos',()=>{
                 expect(todos.length).toBe(1);
                 expect(todos[0].text).toBe(text);
                 done();
-            }).catch((err)=>done(e));
+            }).catch((err)=>done(err));
         })
     })
     it('Should not create a Todo with invalid body data',(done)=>{
@@ -36,9 +47,9 @@ describe('POST /todos',()=>{
         .end((err,res)=>{
             if(err) return done(err);
             Todo.find().then((todos)=>{
-                expect(todos.length).toBe(0);
+                expect(todos.length).toBe(2);
                 done();
-            }).catch((err)=>done(e));
+            }).catch((err)=>done(err));
         })
     })
 })
