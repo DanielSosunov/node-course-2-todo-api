@@ -73,9 +73,13 @@ app.patch('/todos/:id',(req,res)=>{
         res.status(400).send();
     })
 })
+
+
 app.post('/users',(req,res)=>{
     var body = _.pick(req.body,['email','password']);
+    console.log('body',body);
     var user = new User(body);
+    console.log('user',user);
 
     user.save().then(()=>{
         return user.generateAuthToken();
@@ -85,9 +89,6 @@ app.post('/users',(req,res)=>{
         res.status(400).send(e);
     })
 })
-
-
-
 app.get('/users/me',authenticate,(req,res)=>{
     res.send(req.user);
 })
